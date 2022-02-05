@@ -12,8 +12,9 @@ class HelloController
     /**
      * HelloController constructor.
      */
-    public function __construct()
+    public function __construct($table)
     {
+        $this->table = $table;
     }
 
     /**
