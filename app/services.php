@@ -1,8 +1,11 @@
 <?php
 declare(strict_types=1);
 
-use App\HelloController;
 use DI\ContainerBuilder;
+use Illuminate\Database\Schema\Builder;
+use Illuminate\Database\Schema\Grammars\MySqlGrammar;
+use Illuminate\Database\Schema\Grammars\PostgresGrammar;
+use Illuminate\Database\Schema\Grammars\SQLiteGrammar;
 
 return function (ContainerBuilder $containerBuilder) {
     $containerBuilder->addDefinitions([
@@ -36,9 +39,16 @@ return function (ContainerBuilder $containerBuilder) {
 
             return $capsule;
         },
-        HelloController::class => function ($container) {
-            $table = $container->get('db')->table('users');
-            return new HelloController($table);
-        }
+        Builder::class => function ($container) {
+            $connection = $container->get('db')->getConnection();
+            $grammar = $container->get($_ENV['DATABASE_DRIVER']);
+
+            $connection->setSchemaGrammar($grammar);
+
+            return new Builder($container->get('db')->getConnection());
+        },
+        'mysql' => fn() => new MySqlGrammar(),
+        'sqlite' => fn() => new SQLiteGrammar(),
+        'postgres' => fn() => new PostgresGrammar(),
     ]);
 };
