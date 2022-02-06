@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
+use Config\ServiceContainer;
 use DI\ContainerBuilder;
 use Exception;
 use PHPUnit\Framework\TestCase as PHPUnit_TestCase;
@@ -31,11 +32,14 @@ class BaseTestCase extends PHPUnit_TestCase
         $dotenv = new Dotenv();
         $dotenv->load(__DIR__ . '/../.env');
 
+        require_once __DIR__ . '/../app/helpers.php';
+
         $dependencies = require __DIR__ . '/../app/services.php';
         $dependencies($containerBuilder);
 
         $container = $containerBuilder->build();
         AppFactory::setContainer($container);
+        ServiceContainer::set($container);
 
         $app = AppFactory::create();
 
@@ -85,5 +89,25 @@ class BaseTestCase extends PHPUnit_TestCase
         }
 
         return new SlimRequest($method, $uri, $h, $cookies, $serverParams, $stream);
+    }
+
+    /**
+     * Syntax sugar for createRequest function
+     *
+     * @return Request
+     */
+    public function visit()
+    {
+        return $this->createRequest(...func_get_args());
+    }
+
+    /**
+     * @return void
+     */
+    public function tearDown(): void
+    {
+        if (in_array('Tests\Helpers\RefreshDatabase', class_uses($this))) {
+            $this->refreshDatabase();
+        }
     }
 }
