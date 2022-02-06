@@ -2,11 +2,14 @@
 
 declare(strict_types=1);
 
+use Config\ServiceContainer;
 use DI\ContainerBuilder;
 use Slim\Factory\AppFactory;
 use Symfony\Component\Dotenv\Dotenv;
 
 require __DIR__ . '/../vendor/autoload.php';
+
+require_once __DIR__ . '/../app/helpers.php';
 
 $dotenv = new Dotenv();
 $dotenv->load(__DIR__ . '/../.env');
@@ -19,9 +22,10 @@ $containerBuilder = new ContainerBuilder();
 $dependencies = require __DIR__ . '/../app/services.php';
 $dependencies($containerBuilder);
 
-// Initialize app with PHP-DI
+// Initialize app with PHP-DI and the ServiceContainer
 $container = $containerBuilder->build();
 AppFactory::setContainer($container);
+ServiceContainer::set($container);
 
 $app = AppFactory::create();
 
