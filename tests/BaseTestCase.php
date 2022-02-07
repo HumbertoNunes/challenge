@@ -14,6 +14,7 @@ use Slim\Factory\AppFactory;
 use Slim\Psr7\Factory\StreamFactory;
 use Slim\Psr7\Headers;
 use Slim\Psr7\Request as SlimRequest;
+use Slim\Psr7\Response;
 use Slim\Psr7\Uri;
 use Symfony\Component\Dotenv\Dotenv;
 
@@ -94,11 +95,37 @@ class BaseTestCase extends PHPUnit_TestCase
     /**
      * Syntax sugar for createRequest function
      *
-     * @return Request
+     * @return self
      */
-    public function visit()
+    public function visit(): self
     {
-        return $this->createRequest(...func_get_args());
+        $this->request = $this->createRequest(...func_get_args());
+
+        return $this;
+    }
+
+    /**
+     * Syntax sugar for withParsedBody function.
+     *
+     * @param array $formData
+     *
+     * @return self
+     */
+    public function with(array $formData): self
+    {
+        $this->request = $this->request->withParsedBody($formData);
+
+        return $this;
+    }
+
+    /**
+     * Syntax sugar for the App handle function
+     *
+     * @return Response 
+     */
+    public function handle(): Response
+    {
+        return $this->app->handle($this->request);
     }
 
     /**

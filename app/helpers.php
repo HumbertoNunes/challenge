@@ -23,6 +23,18 @@ function query(): Builder
 	return \Config\ServiceContainer::get('db')->table(null);
 }
 
+/**
+ * Returns a factory class
+ *
+ * @return mixed 
+ */
+function factory(string $factoryClass, array $attributes = [])
+{
+	$faker = \Faker\Factory::create();
+
+	return new $factoryClass($faker, $attributes);
+}
+
 function dd($arguments)
 {
 	die(var_dump($arguments));

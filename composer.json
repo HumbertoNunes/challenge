@@ -16,9 +16,9 @@
     },
     "scripts": {
         "start": "php -S localhost:8080 -t public",
-        "test": "phpunit --stop-on-failure",
-        "feature-test": "phpunit --testsuite feature --stop-on-failure",
-        "unit-test": "phpunit --testsuite unit --stop-on-failure",
+        "test": "phpunit",
+        "feature-test": "phpunit --testsuite feature",
+        "unit-test": "phpunit --testsuite unit",
         "migrate": "php database/Migrate.php"
     },
     "require-dev": {
@@ -29,7 +29,9 @@
         "psr-4": {
             "App\\": "src/",
             "Config\\": "config/",
-            "Database\\Migrations\\": "database/migrations/"
+            "Database\\": "database/",
+            "Database\\Migrations\\": "database/migrations/",
+            "Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
