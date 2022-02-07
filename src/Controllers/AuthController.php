@@ -27,7 +27,7 @@ class AuthController extends Controller
         try {
             collect(['email', 'password', 'password_confirmation'])
             ->each(function ($item) use ($params) {
-                if(!$params->has($item)) {
+                if(!$params->has($item) || empty($params->get($item))) {
                     throw new Exception("The {$item} field is required.", 400);
                 }
             });
@@ -38,7 +38,6 @@ class AuthController extends Controller
         } catch (Exception $e) {
             throw new HttpException($request, $e->getMessage(), $e->getCode());
         }
-
     }
 
     /**
@@ -49,12 +48,19 @@ class AuthController extends Controller
      */
     public function login(Request $request, Response $response): Response
     {
-        $params = (array) $request->getParsedBody();
+        $params = collect((array) $request->getParsedBody());
+
+        collect(['email', 'password'])
+        ->each(function ($item) use ($params) {
+            if(!$params->has($item) || empty($params->get($item))) {
+                throw new Exception("The {$item} field is required.", 400);
+            }
+        });
 
         // dd($request->getHeaders()['Authorization'][0]);
 
         try {
-           $token = Auth::login($params);
+           $token = Auth::login($params->get('email'), $params->get('password'));
 
            return $this->asJson($response, $token, 200);
        } catch (Exception $e) {

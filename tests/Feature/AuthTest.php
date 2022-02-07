@@ -53,7 +53,7 @@ class AuthTest extends BaseTestCase
     {
         // Given
         $credentials = factory(UserFactory::class, ['password' => 'Jobsity@2022'])->create()->only(['email', 'password']);
-        $credentials->put('password', 'Jobsity@2022');
+        $credentials->put('password', 'Jobsity@2022'); // The password before be encrypted
 
         // When
         $response = $this->visit('POST', '/login')->with($credentials->all())->handle();
@@ -69,11 +69,28 @@ class AuthTest extends BaseTestCase
      */
     public function it_should_require_the_password_confirmation_on_register_user()
     {
-        $credentials = factory(UserFactory::class, ['password' => 'Jobsity@2022'])->create()->only(['email', 'password']);
+        $credentials = factory(UserFactory::class, ['password' => 'Jobsity@2022'])->make()->only(['email', 'password']);
 
         $this->expectException(HttpException::class);
         $this->expectExceptionCode(400);
         $this->expectExceptionMessage('The password_confirmation field is required.');
+
+        $response = $this->visit('POST', '/register')->with($credentials->all())->handle();
+    }
+
+    /**
+     * @test
+     *
+     * @expectedException HttpException
+     */
+    public function it_should_match_the_password_with_the_password_confirmation_on_register_user()
+    {
+        $credentials = factory(UserFactory::class, ['password' => 'Jobsity@2022'])->make()->only(['email', 'password']);
+        $credentials->put('password_confirmation', 'some other password');
+
+        $this->expectException(HttpException::class);
+        $this->expectExceptionCode(400);
+        $this->expectExceptionMessage('Password must match the confirmation.');
 
         $response = $this->visit('POST', '/register')->with($credentials->all())->handle();
     }
