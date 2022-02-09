@@ -42,7 +42,7 @@ class StockController extends Controller
                 'https://stooq.com/q/l/?s=' . $stock->get('q') . '&f=sd2t2ohlcvn&h&e=csv'
             );
 
-            $stock_quote = $this->sanitize($guzzleResponse);
+            $stock_quote = array_merge($this->sanitize($guzzleResponse), ['user_id' => auth()->id]);
 
             Log::quote($stock_quote);
 
@@ -66,7 +66,7 @@ class StockController extends Controller
      */
     public function history(Request $request, Response $response, array $args): Response
     {
-        $logs = Log::query()->whereUserId(auth()->id)->orderByDesc('date')->get();
+        $logs = Log::query()->select(['date', 'name', 'symbol', 'open', 'high', 'low', 'close'])->whereUserId(auth()->id)->orderByDesc('date')->get();
 
         return $this->asJson($response, $logs);
     }

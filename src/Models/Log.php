@@ -35,8 +35,6 @@ class Log extends Model
     {
         $model = new static($attributes);
 
-        $model->user_id = auth()->id;
-
         return query()->from($model->table)->insert((array) $model->only($model->fillable)->all());
     }
 }

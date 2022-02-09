@@ -45,10 +45,6 @@ class AuthController extends Controller
      */
     public function login(Request $request, Response $response): Response
     {
-        if (!Auth::isGuest($request)) {
-            return $response->withHeader('Location', 'http://localhost:8080/history')->withStatus(302);
-        }
-
         $params = collect((array) $request->getParsedBody());
 
         $this->validate($params, ['email', 'password']);
