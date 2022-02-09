@@ -11,6 +11,7 @@ use App\Models\Log;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
+use Illuminate\Database\QueryException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpException;
@@ -50,6 +51,8 @@ class StockController extends Controller
             $response->getBody()->write(json_encode($stock_quote));
 
             return $response;
+        } catch (QueryException $e) {
+            throw new Exception($e->getMessage());
         } catch (Exception $e) {
             throw new HttpException($request, $e->getMessage(), (int) $e->getCode());
         }
@@ -63,7 +66,7 @@ class StockController extends Controller
      */
     public function history(Request $request, Response $response, array $args): Response
     {
-        $logs = Log::query()->orderByDesc('date')->get();
+        $logs = Log::query()->whereUserId(auth()->id)->orderByDesc('date')->get();
 
         return $this->asJson($response, $logs);
     }

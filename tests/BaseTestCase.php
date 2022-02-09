@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
+use App\Models\User;
 use Config\ServiceContainer;
 use DI\ContainerBuilder;
 use Database\Factories\UserFactory;
@@ -101,7 +102,7 @@ class BaseTestCase extends PHPUnit_TestCase
      */
     public function login(array $credentials = []): self
     {
-        $user = factory(UserFactory::class, $credentials)->create();
+        $user = !empty($credentials) ? new User($credentials) : factory(UserFactory::class, $credentials)->create();
 
         $jwt = 'Bearer ' . JWT::encode($user->email, $_ENV['APP_KEY'], 'HS256');
 

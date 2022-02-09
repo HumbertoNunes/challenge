@@ -14,8 +14,6 @@ class Log extends Model
 	public function __construct(array $attributes = null)
 	{
 		parent::__construct($attributes);
-
-		$this->date = new \DateTime();
 	}
 
 	/**

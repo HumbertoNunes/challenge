@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Models\Log;
+use Database\Factories\LogFactory;
+use Database\Factories\UserFactory;
 use Slim\Exception\HttpException;
 use Tests\BaseTestCase;
 use Tests\Helpers\RefreshDatabase;
@@ -62,16 +64,33 @@ class LogTest extends BaseTestCase
      */
     public function it_should_create_a_log_history_of_the_queries_made_to_the_api_service()
     {
+        $jane = factory(UserFactory::class)->create();
+        $john = factory(UserFactory::class)->create();
+
         $apple_code = 'aapl.us';
         $airbnb_code = 'abnb.us';
 
-        $this->login()->visit('GET', '/stock')->with(['q' => $apple_code])->handle();
+        $this->login(['email' => $jane->email])->visit('GET', '/stock')->with(['q' => $apple_code])->handle();
 
-        $this->login()->visit('GET', '/stock')->with(['q' => $airbnb_code])->handle();
-        $this->login()->visit('GET', '/stock')->with(['q' => $airbnb_code])->handle();
+        $this->login(['email' => $john->email])->visit('GET', '/stock')->with(['q' => $airbnb_code])->handle();
+        $this->login(['email' => $john->email])->visit('GET', '/stock')->with(['q' => $airbnb_code])->handle();
 
-        $this->assertCount(1, Log::query()->where('symbol', 'aapl.us')->get());
-        $this->assertCount(2, Log::query()->where('symbol', 'abnb.us')->get());
+        $this->assertCount(1, Log::query()->whereUserId($jane->id)->get());
+        $this->assertCount(2, Log::query()->whereUserId($john->id)->get());
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_retrieve_all_requests_made_to_the_api_service()
+    {
+        $user = factory(UserFactory::class)->create();
+
+        $logs = factory(LogFactory::class, ['user_id' => $user->id])->create(10);
+
+        $response = $this->login(['email' => $user->email])->visit('GET', '/history')->handle();
+
+        $this->assertCount(10, json_decode((string) $response->getBody(), true));
     }
 
     /**

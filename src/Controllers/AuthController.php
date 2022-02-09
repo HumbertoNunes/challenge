@@ -30,8 +30,10 @@ class AuthController extends Controller
             Auth::register($params->get('email'), $params->get('password'), $params->get('password_confirmation'));
 
             return $this->asJson($response, 'User created', 201);
+        } catch (QueryException $e) {
+            throw new Exception($e->getMessage());
         } catch (Exception $e) {
-            throw new HttpException($request, $e->getMessage(), $e->getCode());
+            throw new HttpException($request, $e->getMessage(), (int) $e->getCode());
         }
     }
 

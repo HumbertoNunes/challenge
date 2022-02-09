@@ -17,11 +17,15 @@ function auth()
     if ($auth = ServiceContainer::get('auth')) {
         $object = User::query()->whereEmail($auth)->first();
 
-        $user = new User((array) $object);
-        $user->id = $object->id;
+        if ($object) {
+            $user = new User((array) $object);
+            $user->id = $object->id;
 
-        return $user;
+            return $user;
+        }
     }
+
+    return false;
 }
 
 /**

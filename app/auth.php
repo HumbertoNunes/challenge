@@ -20,6 +20,10 @@ return function (App $app) {
         "secret" => $_ENV['APP_KEY'],
         "before" => function ($request, $params) {
             ServiceContainer::add('auth', $params['decoded']);
+
+            if (Auth::isGuest()) {
+                throw new HttpUnauthorizedException($request);
+            }
         },
         "error" => function ($response) {
             return $response->withStatus(401);
