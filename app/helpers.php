@@ -10,12 +10,17 @@ use Illuminate\Database\Query\Builder;
 /**
  * Returns the current user signed in
  *
- * @return mixed
+ * @return User|null
  */
 function auth()
 {
     if ($auth = ServiceContainer::get('auth')) {
-        return User::query()->whereEmail($auth)->first();
+        $object = User::query()->whereEmail($auth)->first();
+
+        $user = new User((array) $object);
+        $user->id = $object->id;
+
+        return $user;
     }
 }
 

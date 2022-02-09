@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\Controllers\Controller;
+use App\Mails\Mail;
+use App\Mails\StockQuoteMail;
 use App\Models\Log;
 use Exception;
 use GuzzleHttp\Client;
@@ -12,7 +14,6 @@ use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpException;
-use Symfony\Component\DomCrawler\Crawler;
 
 class StockController extends Controller
 {
@@ -44,7 +45,7 @@ class StockController extends Controller
 
             Log::quote($stock_quote);
 
-            // Mail::to(auth()->user->email)->send($stock_quote);
+            Mail::to(auth()->email)->send(new StockQuoteMail($stock_quote));
 
             $response->getBody()->write(json_encode($stock_quote));
 

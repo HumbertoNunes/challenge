@@ -23,6 +23,13 @@
         "unit-test": "phpunit --testsuite unit",
         "migrate": "php database/Migrate.php"
     },
+    "scripts-descriptions": {
+        "start": "Starts the application",
+        "test": "Run all test suites ",
+        "feature-test": "Run the feature tests suite",
+        "unit-test": "Run the unit tests suite",
+        "migrate": "Run the migrations up/down"
+    },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
         "fakerphp/faker": "^1.19"
