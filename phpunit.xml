@@ -20,7 +20,6 @@
     </testsuites>
     <php>
         <env name="ENV" value="test"/>
-        <env name="ADMIN_USERNAME" value="root"/>
-        <env name="ADMIN_PASSWORD" value="secret"/>
+        <env name="DATABASE_DRIVER" value="sqlite"/>
     </php>
 </phpunit>

@@ -36,7 +36,10 @@ $driver = str_replace('driver:', '', $argv[2] ?? '');
 if (!in_array($method, ['up', 'down'])) {
 	die('Command not found! Migrate accepts only up/down options' . PHP_EOL);
 }
-$_ENV['DATABASE_DRIVER'] = $driver ?: $_ENV['DATABASE_DRIVER'];
+
+if (!empty($driver)) {
+	$_ENV['DATABASE_DRIVER'] = $driver;
+}
 
 $builder = $app->getContainer()->get(Builder::class);
 

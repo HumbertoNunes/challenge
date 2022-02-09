@@ -6,7 +6,9 @@ trait RefreshDatabase
 {
 	public function refreshDatabase()
 	{
-		exec('composer migrate down -q');
-		exec('composer migrate up -q');
+		$driver = $_ENV['DATABASE_DRIVER'];
+
+		exec("composer migrate down driver:{$driver} -q");
+		exec("composer migrate up driver:{$driver} -q");
 	}
 }

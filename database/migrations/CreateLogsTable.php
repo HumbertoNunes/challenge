@@ -3,6 +3,7 @@
 namespace Database\Migrations;
 
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Query\Expression;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\Builder;
 
@@ -18,7 +19,7 @@ class CreateLogsTable extends Migration
         $builder->create('logs', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
-            $table->datetime('date');
+            $table->datetime('date')->default(new Expression('CURRENT_TIMESTAMP'));
             $table->string('name');
             $table->string('symbol');
             $table->decimal('open', 5, 2);

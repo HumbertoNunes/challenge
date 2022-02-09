@@ -18,14 +18,14 @@ class LogFactory extends Log
     {
         extract($this->attributes ?? []); //Provides any specific attributes
 
-        $symbol = $this->faker->randomElement([
+        $symbol = $symbol ?? $this->faker->randomElement([
             'AAON.US',
             'AAPL.US',
             'ABEV.US',
             'ABNB.US'
         ]);
 
-        $name = [
+        $name = $name ?? [
             'AAON.US' => 'AAON',
             'AAPL.US' => 'APPLE',
             'ABEV.US' => 'AMBEV',
@@ -33,14 +33,14 @@ class LogFactory extends Log
         ][$symbol];
 
         return [
-            'user_id' => factory(\Database\Factories\UserFactory::class)->create()->id,
-            'date' => $this->faker->dateTimeThisMonth(),
+            'user_id' => $user_id ?? factory(\Database\Factories\UserFactory::class)->create()->id,
+            'date' => $date ?? $this->faker->dateTimeBetween('-1 week', '+1 week'),
             'name' => $name,
             'symbol' => $symbol,
-            'open' => $this->faker->randomFloat(2, 20, 30),
-            'high' => $this->faker->randomFloat(2, 20, 30),
-            'low' => $this->faker->randomFloat(2, 20, 30),
-            'close' => $this->faker->randomFloat(2, 20, 30),
+            'open' => $open ?? $this->faker->randomFloat(2, 20, 30),
+            'high' => $high ?? $this->faker->randomFloat(2, 20, 30),
+            'low' => $low ?? $this->faker->randomFloat(2, 20, 30),
+            'close' => $close ?? $this->faker->randomFloat(2, 20, 30),
         ];
     }
 }
