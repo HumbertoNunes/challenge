@@ -32,9 +32,9 @@ class LogTest extends BaseTestCase
     /**
      * @test
      */
-    public function it_should_register_stock_quotes()
+    public function itShouldRegisterStockQuotes()
     {
-    	$user = factory(UserFactory::class)->create();
+        $user = factory(UserFactory::class)->create();
         $logs = factory(LogFactory::class, ['user_id' => $user->id])->make(20);
 
         $logs->each(fn ($log) => Log::quote((array) $log));

@@ -12,7 +12,7 @@ use Tests\Helpers\RefreshDatabase;
 
 class UserTest extends BaseTestCase
 {
-	use RefreshDatabase;
+    use RefreshDatabase;
 
     /**
      * @var \Slim\App
@@ -32,7 +32,7 @@ class UserTest extends BaseTestCase
     /**
      * @test
      */
-    public function it_should_retrieve_all_users()
+    public function itShouldRetrieveAllUsers()
     {
         factory(UserFactory::class)->create(4);
 

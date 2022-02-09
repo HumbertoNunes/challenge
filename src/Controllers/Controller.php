@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use Illuminate\Support\Collection;
 use Psr\Http\Message\ResponseInterface as Response;
-use \Exception;
+use Exception;
 
 class Controller
 {
@@ -35,7 +35,7 @@ class Controller
     {
         collect($required_fields)
         ->each(function ($required_field) use ($fields, $messages) {
-            if(!$fields->has($required_field) || empty($fields->get($required_field))) {
+            if (!$fields->has($required_field) || empty($fields->get($required_field))) {
                 $message = $messages[$required_field] ?? "The {$required_field} field is required.";
                 throw new Exception($message, 400);
             }

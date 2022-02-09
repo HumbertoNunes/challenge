@@ -7,30 +7,30 @@ use App\Models\User;
 
 class Log extends Model
 {
-	protected string $table = 'logs';
+    protected string $table = 'logs';
 
-	protected array $fillable = ['user_id', 'date', 'name', 'symbol', 'open', 'high', 'low', 'close'];
+    protected array $fillable = ['user_id', 'date', 'name', 'symbol', 'open', 'high', 'low', 'close'];
 
-	public function __construct(array $attributes = null)
-	{
-		parent::__construct($attributes);
-	}
+    public function __construct(array $attributes = null)
+    {
+        parent::__construct($attributes);
+    }
 
-	/**
-	 * Return the user that created the log
-	 */
-	public function user()
-	{
-		return query()->from($this->table)->whereUserId($this->user_id)->get();
-	}
+    /**
+     * Return the user that created the log
+     */
+    public function user()
+    {
+        return query()->from($this->table)->whereUserId($this->user_id)->get();
+    }
 
-	/**
-	 * Creates a new log for the stock quote
-	 *
-	 * @param array $attributes
-	 *
-	 * @return bool
-	 */
+    /**
+     * Creates a new log for the stock quote
+     *
+     * @param array $attributes
+     *
+     * @return bool
+     */
     public static function quote(array $attributes = null)
     {
         $model = new static($attributes);

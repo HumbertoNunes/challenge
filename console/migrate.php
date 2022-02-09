@@ -34,11 +34,11 @@ $method = $argv[1] ?? 'up';
 $driver = str_replace('driver:', '', $argv[2] ?? '');
 
 if (!in_array($method, ['up', 'down'])) {
-	die('Command not found! Migrate accepts only up/down options' . PHP_EOL);
+    die('Command not found! Migrate accepts only up/down options' . PHP_EOL);
 }
 
 if (!empty($driver)) {
-	$_ENV['DATABASE_DRIVER'] = $driver;
+    $_ENV['DATABASE_DRIVER'] = $driver;
 }
 
 $builder = $app->getContainer()->get(Builder::class);

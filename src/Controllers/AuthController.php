@@ -50,11 +50,11 @@ class AuthController extends Controller
         $this->validate($params, ['email', 'password']);
 
         try {
-           $token = Auth::login($params->get('email'), $params->get('password'));
+            $token = Auth::login($params->get('email'), $params->get('password'));
 
-           return $this->asJson($response, $token, 200);
-       } catch (Exception $e) {
+            return $this->asJson($response, $token, 200);
+        } catch (Exception $e) {
             throw new HttpUnauthorizedException($request, $e->getMessage());
-       }
+        }
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use DI\ContainerBuilder;
@@ -22,7 +23,7 @@ return function (ContainerBuilder $containerBuilder) {
             return new Swift_Mailer($transport);
         },
         'db' => function ($container) {
-            $capsule = new \Illuminate\Database\Capsule\Manager;
+            $capsule = new \Illuminate\Database\Capsule\Manager();
             $connections = $container->get('connections');
             $capsule->addConnection($connections[$_ENV['DATABASE_DRIVER']]);
 

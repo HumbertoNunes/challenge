@@ -51,7 +51,7 @@ function query(): Builder
 /**
  * Returns a factory class
  *
- * @return mixed 
+ * @return mixed
  */
 function factory(string $factoryClass, array $attributes = [])
 {

@@ -6,7 +6,7 @@ use Swift_Message;
 
 interface Mailable
 {
-    /** 
+    /**
      * Builds the message to be sent
      *
      * @param string $to

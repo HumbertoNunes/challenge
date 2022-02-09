@@ -59,7 +59,7 @@ class BaseTestCase extends PHPUnit_TestCase
     /**
      * @return String
      */
-    protected function getAuthorizationHeader(): String
+    protected function getAuthorizationHeader(): string
     {
         $adminTestingUsername = $_ENV["ADMIN_USERNAME"];
         $adminTestingPassword = $_ENV["ADMIN_PASSWORD"];
@@ -147,7 +147,7 @@ class BaseTestCase extends PHPUnit_TestCase
     /**
      * Syntax sugar for the App handle function
      *
-     * @return Response 
+     * @return Response
      */
     public function handle(): Response
     {

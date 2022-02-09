@@ -66,7 +66,10 @@ class StockController extends Controller
      */
     public function history(Request $request, Response $response, array $args): Response
     {
-        $logs = Log::query()->select(['date', 'name', 'symbol', 'open', 'high', 'low', 'close'])->whereUserId(auth()->id)->orderByDesc('date')->get();
+        $logs = Log::query()->select(['date', 'name', 'symbol', 'open', 'high', 'low', 'close'])
+                            ->whereUserId(auth()->id)
+                            ->orderByDesc('date')
+                            ->get();
 
         return $this->asJson($response, $logs);
     }
@@ -88,7 +91,7 @@ class StockController extends Controller
         );
 
         $stock_quote = array_change_key_case(
-            array_combine(...array_chunk($content, count($content)/2))
+            array_combine(...array_chunk($content, count($content) / 2))
         );
 
         extract($stock_quote);
@@ -97,7 +100,7 @@ class StockController extends Controller
     }
 
     /**
-     * 
+     *
      */
     public function validateStockCode($stock_code)
     {

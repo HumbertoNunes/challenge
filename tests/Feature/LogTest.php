@@ -33,7 +33,7 @@ class LogTest extends BaseTestCase
     /**
      * @test
      */
-    public function it_should_retrieve_a_stock_quote()
+    public function itShouldRetrieveAStockQuote()
     {
         $stock_code = $this->randomStockCode();
 
@@ -47,7 +47,7 @@ class LogTest extends BaseTestCase
     /**
      * @test
      */
-    public function it_should_not_retrieve_a_quote_given_a_fake_stock_code()
+    public function itShouldNotRetrieveAQuoteGivenAFakeStockCode()
     {
         $stock_code = 'A' . $this->randomStockCode() . 'S';
 
@@ -62,7 +62,7 @@ class LogTest extends BaseTestCase
    /**
      * @test
      */
-    public function it_should_create_a_log_history_of_the_queries_made_to_the_api_service()
+    public function itShouldCreateALogHistoryOfTheQueriesMadeToTheApiService()
     {
         $jane = factory(UserFactory::class)->create();
         $john = factory(UserFactory::class)->create();
@@ -82,7 +82,7 @@ class LogTest extends BaseTestCase
     /**
      * @test
      */
-    public function it_should_retrieve_all_requests_made_to_the_api_service()
+    public function itShouldRetrieveAllRequestsMadeToTheApiService()
     {
         $user = factory(UserFactory::class)->create();
 

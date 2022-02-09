@@ -13,7 +13,9 @@ class Model
     {
         if ($attributes) {
             foreach ($attributes as $attribute => $value) {
-                if (!in_array($attribute, $this->fillable)) continue;
+                if (!in_array($attribute, $this->fillable)) {
+                    continue;
+                }
                 $this->$attribute = $value;
             }
         }
@@ -52,7 +54,7 @@ class Model
     {
         $query = self::query();
 
-        foreach($this->fillable as $attribute) {
+        foreach ($this->fillable as $attribute) {
             $query->where($attribute, $this->$attribute);
         }
 

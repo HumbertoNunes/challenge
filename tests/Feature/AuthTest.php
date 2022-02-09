@@ -34,7 +34,7 @@ class AuthTest extends BaseTestCase
     /**
      * @test
      */
-    public function it_should_register_a_user()
+    public function itShouldRegisterAUser()
     {
         // Given
         $credentials = factory(UserFactory::class)->make()->only(['email', 'password']);
@@ -51,10 +51,12 @@ class AuthTest extends BaseTestCase
     /**
      * @test
      */
-    public function it_should_authenticate_a_user()
+    public function itShouldAuthenticateAUser()
     {
         // Given
-        $credentials = factory(UserFactory::class, ['password' => 'Jobsity@2022'])->create()->only(['email', 'password']);
+        $credentials = factory(UserFactory::class, [
+            'password' => 'Jobsity@2022'
+        ])->create()->only(['email', 'password']);
         $credentials->put('password', 'Jobsity@2022'); // The password before be encrypted
 
         // When
@@ -69,7 +71,7 @@ class AuthTest extends BaseTestCase
      *
      * @expectedException HttpException
      */
-    public function it_should_require_the_password_confirmation_on_register_user()
+    public function itShouldRequireThePasswordConfirmationOnRegisterUser()
     {
         $credentials = factory(UserFactory::class, ['password' => 'Jobsity@2022'])->make()->only(['email', 'password']);
 
@@ -85,7 +87,7 @@ class AuthTest extends BaseTestCase
      *
      * @expectedException HttpException
      */
-    public function it_should_check_the_password_with_the_password_confirmation_on_register_user()
+    public function itShouldCheckThePasswordWithThePasswordConfirmationOnRegisterUser()
     {
         $credentials = factory(UserFactory::class, ['password' => 'Jobsity@2022'])->make()->only(['email', 'password']);
         $credentials->put('password_confirmation', 'some other password');
@@ -102,7 +104,7 @@ class AuthTest extends BaseTestCase
      *
      * @expectedException HttpUnauthorizedException
      */
-    public function it_should_not_allow_the_user_sign_in_with_fake_email()
+    public function itShouldNotAllowTheUserSignInWithFakeEmail()
     {
         $user = factory(UserFactory::class)->make();
         $fake_credentials = $user->put('email', 'jobsity@mail.com')->all();
@@ -119,7 +121,7 @@ class AuthTest extends BaseTestCase
      *
      * @expectedException HttpUnauthorizedException
      */
-    public function it_should_not_allow_the_user_sign_in_with_wrong_password()
+    public function itShouldNotAllowTheUserSignInWithWrongPassword()
     {
         $user = factory(UserFactory::class)->make();
         $fake_credentials = $user->put('password', 'Jobsity@2021')->all();

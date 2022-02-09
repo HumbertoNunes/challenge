@@ -3,7 +3,7 @@
 namespace App\Mails;
 
 use App\Interfaces\Mailable;
-use \Swift_Message;
+use Swift_Message;
 
 class StockQuoteMail implements Mailable
 {
@@ -15,7 +15,7 @@ class StockQuoteMail implements Mailable
         $this->content = json_encode($content, JSON_PRETTY_PRINT);
     }
 
-    /** 
+    /**
      * Builds the message to be sent
      *
      * @param string $to

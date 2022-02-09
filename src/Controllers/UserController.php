@@ -47,12 +47,12 @@ class UserController extends Controller
      */
     public function store(Request $request, Response $response): Response
     {
-    	$params = (array) $request->getParsedBody();
+        $params = (array) $request->getParsedBody();
         $params['password'] = password_hash($params['password'], PASSWORD_BCRYPT);
 
         $user = new User();
         $user->insert($params);
 
         return $this->asJson($response, $user, 201);
-    }    
+    }
 }

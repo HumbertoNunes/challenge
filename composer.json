@@ -34,7 +34,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
-        "fakerphp/faker": "^1.19"
+        "fakerphp/faker": "^1.19",
+        "squizlabs/php_codesniffer": "*"
     },
     "autoload": {
         "psr-4": {

@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Support\Collection;
-use \Faker\Generator as Faker;
+use Faker\Generator as Faker;
 
 trait Factory
 {
@@ -23,7 +23,7 @@ trait Factory
      */
     public function make(int $amount = 1)
     {
-        for ($i=0; $i < $amount; $i++) { 
+        for ($i = 0; $i < $amount; $i++) {
             $model = new parent($this->define());
 
             $this->collection->push($model);
