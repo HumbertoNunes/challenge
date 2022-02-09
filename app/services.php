@@ -21,23 +21,34 @@ return function (ContainerBuilder $containerBuilder) {
 
             return new Swift_Mailer($transport);
         },
-        'db' => function () {
+        'db' => function ($container) {
             $capsule = new \Illuminate\Database\Capsule\Manager;
-            $capsule->addConnection([
-                'driver' => $_ENV['DATABASE_DRIVER'],
-                'host' => $_ENV['DATABASE_HOST'],
-                'database' => $_ENV['DATABASE_DATABASE'],
-                'username' => $_ENV['DATABASE_USERNAME'],
-                'password' => $_ENV['DATABASE_PASSWORD'],
-                'charset'   => $_ENV['DATABASE_CHARSET'],
-                'collation' => $_ENV['DATABASE_COLLATION'],
-                'prefix'    => $_ENV['DATABASE_PREFIX'],
-            ]);
+            $connections = $container->get('connections');
+            $capsule->addConnection($connections[$_ENV['DATABASE_DRIVER']]);
 
             $capsule->setAsGlobal();
             $capsule->bootEloquent();
 
             return $capsule;
+        },
+        'connections' => function () {
+            return [
+                'mysql' => [
+                    'driver' => 'mysql',
+                    'host' => $_ENV['DATABASE_HOST'],
+                    'database' => $_ENV['DATABASE_DATABASE'],
+                    'username' => $_ENV['DATABASE_USERNAME'],
+                    'password' => $_ENV['DATABASE_PASSWORD'],
+                    'charset'   => $_ENV['DATABASE_CHARSET'],
+                    'collation' => $_ENV['DATABASE_COLLATION'],
+                    'prefix'    => $_ENV['DATABASE_PREFIX'],
+                ],
+                'sqlite' => [
+                    'driver' => 'sqlite',
+                    'database' => __DIR__ . '/../database/database.sqlite',
+                    'prefix'    => $_ENV['DATABASE_PREFIX'],
+                ]
+            ];
         },
         Builder::class => function ($container) {
             $connection = $container->get('db')->getConnection();
