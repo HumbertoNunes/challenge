@@ -14,7 +14,7 @@ class Migration
 	 */
 	public function __construct()
 	{
-		$this->migrations = [
+		$this->classes = [
 			CreateUsersTable::class,
 			CreateLogsTable::class
 		];
@@ -29,14 +29,14 @@ class Migration
 	 */
 	public static function up(Builder $builder)
 	{
-		$instance = new static();
+		$migration = new static();
 
-		foreach($instance->migrations as $migration) {
-			$instance->getClassBase($migration);
+		foreach($migration->classes as $class) {
+			$migration->removeNamespace($class);
 
-			echo "Migrating: {$instance->migration_class}" . PHP_EOL; 
-			$migration::up($builder);
-			echo "Migrated: {$instance->migration_class}" . PHP_EOL;
+			echo "Migrating: {$migration->classname}" . PHP_EOL; 
+			$class::up($builder);
+			echo "Migrated: {$migration->classname}" . PHP_EOL;
 		}
 	}
 
@@ -49,28 +49,30 @@ class Migration
 	 */
 	public static function down(Builder $builder)
 	{
-		$instance = new static();
+		$migration = new static();
 
-		foreach($instance->migrations as $migration) {
-			$instance->getClassBase($migration);
+		$migration->classes = array_reverse($migration->classes);
 
-			echo "Migrating: {$instance->migration_class}" . PHP_EOL;
-			$migration::down($builder);
-			echo "Migrated: {$instance->migration_class}" . PHP_EOL;
+		foreach($migration->classes as $class) {
+			$migration->removeNamespace($class);
+
+			echo "Migrating: {$migration->classname}" . PHP_EOL;
+			$class::down($builder);
+			echo "Migrated: {$migration->classname}" . PHP_EOL;
 		}
 	}
 
 	/**
-	 * Retrieve the class basename of the migration class
+	 * Remove the class namespace
 	 *
-	 * @param string $migration
+	 * @param string $namespace
 	 *
 	 * @return voide
 	 */
-	private function getClassBase($migration)
+	private function removeNamespace($class)
 	{
-		$exploded_namespace = explode('\\', $migration);
+		$exploded_namespace = explode('\\', $class);
 
-		$this->migration_class = array_pop($exploded_namespace);
+		$this->classname = array_pop($exploded_namespace);
 	}
 }

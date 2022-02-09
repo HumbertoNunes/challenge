@@ -17,7 +17,6 @@ class CreateUsersTable extends Migration
     {
         $builder->create('users', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
         });

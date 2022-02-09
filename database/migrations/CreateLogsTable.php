@@ -17,12 +17,16 @@ class CreateLogsTable extends Migration
     {
         $builder->create('logs', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name')->unique();
-            $table->string('symbol')->unique();
+            $table->unsignedBigInteger('user_id');
+            $table->datetime('date');
+            $table->string('name');
+            $table->string('symbol');
             $table->decimal('open', 5, 2);
             $table->decimal('high', 5, 2);
             $table->decimal('low', 5, 2);
             $table->decimal('close', 5, 2);
+
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
