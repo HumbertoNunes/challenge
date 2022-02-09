@@ -25,12 +25,7 @@ class AuthController extends Controller
         $params = collect((array) $request->getParsedBody());
 
         try {
-            collect(['email', 'password', 'password_confirmation'])
-            ->each(function ($item) use ($params) {
-                if(!$params->has($item) || empty($params->get($item))) {
-                    throw new Exception("The {$item} field is required.", 400);
-                }
-            });
+            $this->validate($params, ['email', 'password', 'password_confirmation']);
 
             Auth::register($params->get('email'), $params->get('password'), $params->get('password_confirmation'));
 
@@ -48,16 +43,13 @@ class AuthController extends Controller
      */
     public function login(Request $request, Response $response): Response
     {
+        if (!Auth::isGuest($request)) {
+            return $response->withHeader('Location', 'http://localhost:8080/history')->withStatus(302);
+        }
+
         $params = collect((array) $request->getParsedBody());
 
-        collect(['email', 'password'])
-        ->each(function ($item) use ($params) {
-            if(!$params->has($item) || empty($params->get($item))) {
-                throw new Exception("The {$item} field is required.", 400);
-            }
-        });
-
-        // dd($request->getHeaders()['Authorization'][0]);
+        $this->validate($params, ['email', 'password']);
 
         try {
            $token = Auth::login($params->get('email'), $params->get('password'));

@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Slim\Exception\HttpUnauthorizedException;
 use Exception;
+use Firebase\JWT\JWT;
+use Slim\Exception\HttpUnauthorizedException;
+use Slim\Psr7\Request;
 
 class Auth
 {
@@ -62,6 +64,18 @@ class Auth
             throw new Exception("Incorrect username or password.");
         }
 
-        return 'Bearer ' . base64_encode("{$email}:{$password}");
+        return JWT::encode($email, $_ENV['APP_KEY'], 'HS256');
+    }
+
+    /**
+     * Checks if the user is a guest
+     *
+     * @param Request $request
+     *
+     * @return bool
+     */
+    public static function isGuest()
+    {
+        return !auth();
     }
 }

@@ -31,7 +31,9 @@ class Model
      */
     public static function query(): Builder
     {
-        return query();
+        $model = new static();
+
+        return query()->from($model->table);
     }
 
     /**
@@ -44,5 +46,22 @@ class Model
         $model = new static();
 
         return query()->from($model->table)->get();
+    }
+
+    public function refresh()
+    {
+        $query = self::query();
+
+        foreach($this->fillable as $attribute) {
+            $query->where($attribute, $this->$attribute);
+        }
+
+        $attributes = (array) $query->first();
+
+        foreach ($attributes as $attribute => $value) {
+            $this->$attribute = $value;
+        }
+
+        return $this;
     }
 }
