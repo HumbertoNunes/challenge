@@ -49,6 +49,8 @@ trait Factory
 
         query()->from($this->table)->insert($values->all());
 
+        $amount > 1 ? $models->each->refresh() : $models->refresh();
+
         return $models;
     }
 

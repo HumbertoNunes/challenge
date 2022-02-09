@@ -29,6 +29,19 @@ class ServiceContainer
      */
     public static function get(string $key)
     {
-        return self::$container->get($key);
+        return self::$container->has($key) ? self::$container->get($key) : null;
+    }
+
+    /**
+     * Add a new item to the container
+     *
+     * @param string $key
+     * @param string $value
+     *
+     * @return void
+     */
+    public static function add($key, $value): void
+    {
+        self::$container->set($key, $value);
     }
 }

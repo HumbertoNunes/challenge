@@ -6,7 +6,9 @@ namespace Tests;
 
 use Config\ServiceContainer;
 use DI\ContainerBuilder;
+use Database\Factories\UserFactory;
 use Exception;
+use Firebase\JWT\JWT;
 use PHPUnit\Framework\TestCase as PHPUnit_TestCase;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\App;
@@ -93,27 +95,50 @@ class BaseTestCase extends PHPUnit_TestCase
     }
 
     /**
+     * Authenticate the user with a JWT
+     *
+     * @return self
+     */
+    public function login(array $credentials = []): self
+    {
+        $user = factory(UserFactory::class, $credentials)->create();
+
+        $jwt = 'Bearer ' . JWT::encode($user->email, $_ENV['APP_KEY'], 'HS256');
+
+        $this->headers = [['Authorization' => $jwt]];
+
+        return $this;
+    }
+
+    /**
      * Syntax sugar for createRequest function
      *
      * @return self
      */
     public function visit(): self
     {
-        $this->request = $this->createRequest(...func_get_args());
+        $arguments = array_merge(func_get_args(), $this->headers ?? []);
+
+        $this->request = $this->createRequest(...$arguments);
 
         return $this;
     }
 
     /**
-     * Syntax sugar for withParsedBody function.
+     * Syntax sugar for passing data through the QueryString or the Request Body.
      *
-     * @param array $formData
+     * @param array $data
      *
      * @return self
      */
-    public function with(array $formData): self
+    public function with(array $data): self
     {
-        $this->request = $this->request->withParsedBody($formData);
+        $with = [
+            'GET' => 'withQueryParams',
+            'POST' => 'withParsedBody'
+        ][$this->request->getMethod()];
+
+        $this->request = $this->request->$with($data);
 
         return $this;
     }

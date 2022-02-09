@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use Database\Factories\UserFactory;
 use Slim\Exception\HttpUnauthorizedException;
 use Tests\BaseTestCase;
@@ -33,14 +34,10 @@ class UserTest extends BaseTestCase
      */
     public function it_should_retrieve_all_users()
     {
-        $factory_users = factory(UserFactory::class)->create(5);
+        factory(UserFactory::class)->create(4);
 
-        $response = $this->visit('GET', '/users')->handle();
+        $response = $this->login()->visit('GET', '/users')->handle();
         $users = json_decode((string) $response->getBody());
-
-        foreach ($users as $key => $user) {
-            $this->assertEquals($factory_users->get($key)->email, $user->email);
-        }
 
         $this->assertCount(5, $users);
         $this->assertEquals(200, $response->getStatusCode());

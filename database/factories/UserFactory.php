@@ -4,8 +4,6 @@ namespace Database\Factories;
 
 use App\Models\User;
 use Database\Factories\Factory;
-use Illuminate\Support\Collection;
-use \Faker\Generator as Faker;
 
 class UserFactory extends User
 {
