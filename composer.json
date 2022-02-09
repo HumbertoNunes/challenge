@@ -18,16 +18,18 @@
     },
     "scripts": {
         "start": "php -S localhost:8080 -t public",
+        "key:generate": "php console/key-generator.php",
         "test": "phpunit",
-        "feature-test": "phpunit --testsuite feature",
-        "unit-test": "phpunit --testsuite unit",
-        "migrate": "php database/Migrate.php"
+        "feature:test": "phpunit --testsuite feature",
+        "unit:test": "phpunit --testsuite unit",
+        "migrate": "php console/migrate.php"
     },
     "scripts-descriptions": {
         "start": "Starts the application",
+        "key:generate": "Creates a key for the application",
         "test": "Run all test suites ",
-        "feature-test": "Run the feature tests suite",
-        "unit-test": "Run the unit tests suite",
+        "feature:test": "Run the feature tests suite",
+        "unit:test": "Run the unit tests suite",
         "migrate": "Run the migrations up/down"
     },
     "require-dev": {

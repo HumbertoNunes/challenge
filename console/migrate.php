@@ -10,6 +10,8 @@ use Symfony\Component\Dotenv\Dotenv;
 
 require __DIR__ . '/../vendor/autoload.php';
 
+require_once __DIR__ . '/../app/helpers.php';
+
 $dotenv = new Dotenv();
 $dotenv->load(__DIR__ . '/../.env');
 
@@ -29,10 +31,12 @@ $app = AppFactory::create();
 
 // Migration Command Line Service
 $method = $argv[1] ?? 'up';
+$driver = str_replace('driver:', '', $argv[2] ?? '');
 
 if (!in_array($method, ['up', 'down'])) {
 	die('Command not found! Migrate accepts only up/down options' . PHP_EOL);
 }
+$_ENV['DATABASE_DRIVER'] = $driver ?: $_ENV['DATABASE_DRIVER'];
 
 $builder = $app->getContainer()->get(Builder::class);
 
