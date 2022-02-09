@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use Database\Factories\UserFactory;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use Slim\Exception\HttpException;
 use Slim\Exception\HttpUnauthorizedException;
 use Tests\BaseTestCase;
@@ -59,7 +61,7 @@ class AuthTest extends BaseTestCase
         $response = $this->visit('POST', '/login')->with($credentials->all())->handle();
 
         // Then
-        $this->assertToken($credentials->all(), (string) $response->getBody());
+        $this->assertToken($credentials->get('email'), (string) $response->getBody());
     }
 
     /**
@@ -83,7 +85,7 @@ class AuthTest extends BaseTestCase
      *
      * @expectedException HttpException
      */
-    public function it_should_match_the_password_with_the_password_confirmation_on_register_user()
+    public function it_should_check_the_password_with_the_password_confirmation_on_register_user()
     {
         $credentials = factory(UserFactory::class, ['password' => 'Jobsity@2022'])->make()->only(['email', 'password']);
         $credentials->put('password_confirmation', 'some other password');
@@ -130,17 +132,15 @@ class AuthTest extends BaseTestCase
     }
 
     /**
-     * @param array $credentials
-     * @param string $token
+     * @param string $email
+     * @param string $jwt
      *
      * @return void
      */
-    private function assertToken(array $credentials, string $token)
+    private function assertToken(string $email, string $jwt)
     {
-        $credentials = "{$credentials['email']}:{$credentials['password']}";
+        $decoded = JWT::decode($jwt, new Key($_ENV['APP_KEY'], 'HS256'));
 
-        $token = base64_decode(str_replace('Bearer ', '', $token));
-
-        $this->assertEquals($credentials, $token);
+        $this->assertEquals($email, $decoded);
     }
 }

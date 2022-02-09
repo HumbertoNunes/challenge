@@ -1,7 +1,23 @@
 <?php
 
+use App\Models\User;
+use Config\ServiceContainer;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use Illuminate\Database\Capsule\Manager;
 use Illuminate\Database\Query\Builder;
+
+/**
+ * Returns the current user signed in
+ *
+ * @return mixed
+ */
+function auth()
+{
+    if ($auth = ServiceContainer::get('auth')) {
+        return User::query()->whereEmail($auth)->first();
+    }
+}
 
 /**
  * Returns a Connection instance
@@ -10,7 +26,7 @@ use Illuminate\Database\Query\Builder;
  */
 function connection(): Manager
 {
-	return \Config\ServiceContainer::get('db');
+    return \Config\ServiceContainer::get('db');
 }
 
 /**
@@ -20,7 +36,7 @@ function connection(): Manager
  */
 function query(): Builder
 {
-	return \Config\ServiceContainer::get('db')->table(null);
+    return \Config\ServiceContainer::get('db')->table(null);
 }
 
 /**
@@ -30,12 +46,15 @@ function query(): Builder
  */
 function factory(string $factoryClass, array $attributes = [])
 {
-	$faker = \Faker\Factory::create();
+    $faker = \Faker\Factory::create();
 
-	return new $factoryClass($faker, $attributes);
+    return new $factoryClass($faker, $attributes);
 }
 
-function dd($arguments)
+function dd()
 {
-	die(var_dump($arguments));
+    foreach (func_get_args() as $argument) {
+        var_dump($argument);
+    }
+    die();
 }
