@@ -15,11 +15,13 @@ class Controller
      */
     public function asJson(Response $response, $payload, $statusCode = 200)
     {
-        $response->getBody()->write(is_string($payload) ? $payload : json_encode($payload));
+        $payload = is_string($payload) ? ['message' => $payload] : $payload;
+
+        $response->getBody()->write(json_encode($payload));
 
         return $response
             ->withHeader('Content-Type', 'application/json')
-            ->withStatus($statusCode);
+            ->withStatus($statusCode == 0 ? 500 : $statusCode);
     }
 
     /**

@@ -51,10 +51,8 @@ class StockController extends Controller
             $response->getBody()->write(json_encode($stock_quote));
 
             return $response;
-        } catch (QueryException $e) {
-            throw new Exception($e->getMessage());
         } catch (Exception $e) {
-            throw new HttpException($request, $e->getMessage(), (int) $e->getCode());
+            return $this->asJson($response, $e->getMessage(), $e->getCode());
         }
     }
 

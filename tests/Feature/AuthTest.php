@@ -44,7 +44,7 @@ class AuthTest extends BaseTestCase
         $response = $this->visit('POST', '/register')->with($credentials->all())->handle();
 
         // Then
-        $this->assertEquals('User created', (string) $response->getBody());
+        $this->assertEquals('User created', json_decode((string) $response->getBody())->message);
         $this->assertEquals(201, $response->getStatusCode());
     }
 
@@ -63,7 +63,7 @@ class AuthTest extends BaseTestCase
         $response = $this->visit('POST', '/login')->with($credentials->all())->handle();
 
         // Then
-        $this->assertToken($credentials->get('email'), (string) $response->getBody());
+        $this->assertToken($credentials->get('email'), json_decode((string) $response->getBody())->token);
     }
 
     /**
@@ -75,11 +75,9 @@ class AuthTest extends BaseTestCase
     {
         $credentials = factory(UserFactory::class, ['password' => 'Jobsity@2022'])->make()->only(['email', 'password']);
 
-        $this->expectException(HttpException::class);
-        $this->expectExceptionCode(400);
-        $this->expectExceptionMessage('The password_confirmation field is required.');
-
         $response = $this->visit('POST', '/register')->with($credentials->all())->handle();
+
+        $this->assertEquals('The password_confirmation field is required.', json_decode((string) $response->getBody())->message);
     }
 
     /**
@@ -92,11 +90,10 @@ class AuthTest extends BaseTestCase
         $credentials = factory(UserFactory::class, ['password' => 'Jobsity@2022'])->make()->only(['email', 'password']);
         $credentials->put('password_confirmation', 'some other password');
 
-        $this->expectException(HttpException::class);
-        $this->expectExceptionCode(400);
-        $this->expectExceptionMessage('Password must match the confirmation.');
-
         $response = $this->visit('POST', '/register')->with($credentials->all())->handle();
+
+        $this->assertEquals('Password must match the confirmation.', json_decode((string) $response->getBody())->message);
+
     }
 
     /**
@@ -109,11 +106,9 @@ class AuthTest extends BaseTestCase
         $user = factory(UserFactory::class)->make();
         $fake_credentials = $user->put('email', 'jobsity@mail.com')->all();
 
-        $this->expectException(HttpUnauthorizedException::class);
-        $this->expectExceptionCode(401);
-        $this->expectExceptionMessage('Incorrect username or password.');
+        $response = $this->visit('POST', '/login')->with($fake_credentials)->handle();
 
-        $this->visit('POST', '/login')->with($fake_credentials)->handle();
+        $this->assertEquals('Incorrect username or password.', json_decode((string) $response->getBody())->message);
     }
 
     /**
@@ -126,11 +121,9 @@ class AuthTest extends BaseTestCase
         $user = factory(UserFactory::class)->make();
         $fake_credentials = $user->put('password', 'Jobsity@2021')->all();
 
-        $this->expectException(HttpUnauthorizedException::class);
-        $this->expectExceptionCode(401);
-        $this->expectExceptionMessage('Incorrect username or password.');
+        $response = $this->visit('POST', '/login')->with($fake_credentials)->handle();
 
-        $this->visit('POST', '/login')->with($fake_credentials)->handle();
+        $this->assertEquals('Incorrect username or password.', json_decode((string) $response->getBody())->message);
     }
 
     /**

@@ -51,12 +51,10 @@ class LogTest extends BaseTestCase
     {
         $stock_code = 'A' . $this->randomStockCode() . 'S';
 
-        $this->expectException(HttpException::class);
-        $this->expectExceptionCode(400);
-        $this->expectExceptionMessage("{$stock_code} is not a valid stock code");
-
         $response = $this->login()->visit('GET', '/stock')->with(['q' => $stock_code])->handle();
-        $stockQuote = json_decode((string) $response->getBody(), true);
+        $response = json_decode((string) $response->getBody());
+
+        $this->assertEquals($stock_code . ' is not a valid stock code', $response->message);
     }
 
    /**
