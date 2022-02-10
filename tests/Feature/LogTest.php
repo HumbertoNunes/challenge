@@ -40,7 +40,7 @@ class LogTest extends BaseTestCase
         $response = $this->login()->visit('GET', '/stock')->with(['q' => $stock_code])->handle();
         $stockQuote = json_decode((string) $response->getBody(), true);
 
-        $this->assertCount(7, $stockQuote);
+        $this->assertCount(6, $stockQuote);
         $this->assertEquals($stock_code, $stockQuote['symbol']);
     }
 

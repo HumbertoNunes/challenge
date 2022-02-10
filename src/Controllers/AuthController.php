@@ -45,9 +45,9 @@ class AuthController extends Controller
     {
         $params = collect((array) $request->getParsedBody());
 
-        $this->validate($params, ['email', 'password']);
-
         try {
+            $this->validate($params, ['email', 'password']);
+
             $token = Auth::login($params->get('email'), $params->get('password'));
 
             return $this->asJson($response, ['message' => 'User already signed in', 'token' => $token], 200);

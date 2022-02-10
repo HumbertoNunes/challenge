@@ -61,7 +61,7 @@ class Auth
         $user = query()->from('users')->whereEmail($email)->first();
 
         if (!$user || !password_verify($password, $user->password)) {
-            throw new Exception("Incorrect username or password.");
+            throw new Exception("Incorrect username or password.", 400);
         }
 
         return JWT::encode($email, $_ENV['APP_KEY'], 'HS256');

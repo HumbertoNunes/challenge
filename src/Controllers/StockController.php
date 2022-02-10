@@ -48,7 +48,11 @@ class StockController extends Controller
 
             Mail::to(auth()->email)->send(new StockQuoteMail($stock_quote));
 
-            $response->getBody()->write(json_encode($stock_quote));
+            $response->getBody()->write(
+                json_encode(
+                    collect($stock_quote)->forget('user_id')->all()
+                )
+            );
 
             return $response;
         } catch (Exception $e) {

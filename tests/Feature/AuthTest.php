@@ -77,7 +77,10 @@ class AuthTest extends BaseTestCase
 
         $response = $this->visit('POST', '/register')->with($credentials->all())->handle();
 
-        $this->assertEquals('The password_confirmation field is required.', json_decode((string) $response->getBody())->message);
+        $this->assertEquals(
+            'The password_confirmation field is required.',
+            json_decode((string) $response->getBody())->message
+        );
     }
 
     /**
@@ -92,8 +95,10 @@ class AuthTest extends BaseTestCase
 
         $response = $this->visit('POST', '/register')->with($credentials->all())->handle();
 
-        $this->assertEquals('Password must match the confirmation.', json_decode((string) $response->getBody())->message);
-
+        $this->assertEquals(
+            'Password must match the confirmation.',
+            json_decode((string) $response->getBody())->message
+        );
     }
 
     /**
