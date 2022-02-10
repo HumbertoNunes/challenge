@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-use Config\ServiceContainer;
 use DI\ContainerBuilder;
+use Database\Migrations\Migration;
+use Illuminate\Database\Schema\Builder;
 use Slim\Factory\AppFactory;
 use Symfony\Component\Dotenv\Dotenv;
 
@@ -22,26 +23,24 @@ $containerBuilder = new ContainerBuilder();
 $dependencies = require __DIR__ . '/../app/services.php';
 $dependencies($containerBuilder);
 
-// Initialize app with PHP-DI and the ServiceContainer
+// Initialize app with PHP-DI
 $container = $containerBuilder->build();
 AppFactory::setContainer($container);
-ServiceContainer::set($container);
 
 $app = AppFactory::create();
 
-// Register routes
-$routes = require __DIR__ . '/../app/routes.php';
-$routes($app);
+// Migration Command Line Service
+$method = $argv[1] ?? 'up';
+$driver = str_replace('driver:', '', $argv[2] ?? '');
 
-// Setup Basic Auth
-$auth = require __DIR__ . '/../app/auth.php';
-$auth($app);
+if (!in_array($method, ['up', 'down'])) {
+    die('Command not found! Migrate accepts only up/down options' . PHP_EOL);
+}
 
-$displayErrorDetails = $ENV == 'dev';
-$errorMiddleware = $app->addErrorMiddleware($displayErrorDetails, true, true);
+if (!empty($driver)) {
+    $_ENV['DATABASE_DRIVER'] = $driver;
+}
 
-// Error Handler
-$errorHandler = $errorMiddleware->getDefaultErrorHandler();
-$errorHandler->forceContentType('application/json');
+$builder = $app->getContainer()->get(Builder::class);
 
-$app->run();
+Migration::$method($builder);

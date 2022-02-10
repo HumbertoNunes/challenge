@@ -2,22 +2,29 @@
 
 declare(strict_types=1);
 
-use Slim\App;
-use Slim\Exception\HttpUnauthorizedException;
+use App\Models\Auth;
+use Config\ServiceContainer;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
-use Tuupola\Middleware\HttpBasicAuthentication;
+use Slim\App;
+use Slim\Exception\HttpUnauthorizedException;
+use Tuupola\Middleware\JwtAuthentication;
 
 return function (App $app) {
     $username = $_ENV["ADMIN_USERNAME"] ?? 'root';
     $password = $_ENV["ADMIN_PASSWORD"] ?? 'secret';
 
     // 1st middleware to configure basic authentication
-    $app->add(new HttpBasicAuthentication([
-        "path" => ["/bye"], // protected routes
-        "users" => [
-            $username => $password,
-        ],
+    $app->add(new JwtAuthentication([
+        "path" => ['/stock', '/history', '/users'], // protected routes
+        "secret" => $_ENV['APP_KEY'],
+        "before" => function ($request, $params) {
+            ServiceContainer::add('auth', $params['decoded']);
+
+            if (Auth::isGuest()) {
+                throw new HttpUnauthorizedException($request);
+            }
+        },
         "error" => function ($response) {
             return $response->withStatus(401);
         }
